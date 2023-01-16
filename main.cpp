@@ -1,6 +1,6 @@
 /*
     Title: Non-Intrusive Eye Direction Classification and Blink Detection using Video Analysis
-    Descripion:
+    Description:
     The face of the subject is first detected using the YCbCr color space and connected-component analysis.
     The eye region will then be localized by following some rules in face geometry.
     Each iris and eye boundary is segmented from the region of interest by filtering, intensity thresholding and morphological operations.
@@ -50,7 +50,7 @@ void scaleRGB( RGBImage & outputImage, const RGBImage & inputImage) {
 	}
 }
 
-/* Function for coloring the boxes in eye direction */
+/* Function for coloring boxes in eye direction */
 void colorEyeDirection(RGBImage & eyeDirection, int startWidth, int endWidth, int startHeight, int endHeight){
 	int x,y;
 	for(x=startWidth; x<endWidth; x++){
@@ -132,7 +132,7 @@ void eyeMovement(RGBImage & eye, RGBImage & eyeDirection, int width, int height,
 	
 	int adjust=((width/3)/5);
 	
-	//draw the 9 boxes
+	// draw 9 boxes
 	for (x = 0; x < boxWidth;  x++){
 		for (y=0; y<3; y++){
 			eyeDirection(x, y+boxHeight/3) = COLOR_RGB(255,0,0);
@@ -246,9 +246,8 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 	
 	Image<unsigned char> binary, binary1, componentImage, grayImage, grayMedian, strucElem;
 	RGBImage pupil, sample;
-	ConnectedComponents cc;   // in binary.h, a class for connected component labelling
-	int filterWidth = 9;   // the width of the filter
-	//int strucWidth = 3; 			//for normal
+	ConnectedComponents cc;  // connected component labelling
+	int filterWidth = 9;     // the width of the filter
 	int strucWidth = 11;
 	
 	area[0] = area[1] = 0;
@@ -374,13 +373,13 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 			}
 			
 			area[eyeNum] = _maxPupilWidth*_maxPupilHeight;
-			// draw the top and bottom boundaries (square)
+			// draw the top and bottom boundaries
 			for (x = _maxPupilX; x < _maxPupilX+_maxPupilWidth;  x++) {
-				outputImage(startRow2X+x+eyeRegion,startRow2Y+_maxPupilY+h) = COLOR_RGB(0,255,0);                 //top
-				outputImage(startRow2X+x+eyeRegion,startRow2Y+_maxPupilY+_maxPupilHeight+h) = COLOR_RGB(0,255,0); //bottom
+				outputImage(startRow2X+x+eyeRegion,startRow2Y+_maxPupilY+h) = COLOR_RGB(0,255,0);                 // top
+				outputImage(startRow2X+x+eyeRegion,startRow2Y+_maxPupilY+_maxPupilHeight+h) = COLOR_RGB(0,255,0); // bottom
 			}
 						
-			// draw the left and right boundaries (square)
+			// draw the left and right boundaries
 			for (y = _maxPupilY; y < _maxPupilY+_maxPupilHeight; y++) {
 				outputImage(startRow2X+_maxPupilX+eyeRegion,startRow2Y+y+h) = COLOR_RGB(0,255,0);
 				outputImage(startRow2X+_maxPupilX+_maxPupilWidth+eyeRegion,startRow2Y+y+h)=COLOR_RGB(0,255,0);
@@ -414,10 +413,9 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 					} 
 					
 					
-				strucElem.resize(strucWidth,strucWidth);   // a square structuring element
+				strucElem.resize(strucWidth,strucWidth); // structuring element
 				strucElem.setAll(1);
 				binary1 = binaryDilation( binary1, strucElem, strucWidth/2, strucWidth/2 );
-				//binary1 = binaryDilation( binary1, strucElem, strucWidth/2, strucWidth/2 );
 				binary1 = binaryErosion( binary1, strucElem, strucWidth/2, strucWidth/2 );
 					
 				
@@ -464,8 +462,8 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 						}
 					}
 					for (x = _eyeStartX; x < _eyeStartX+_eyeWidth;  x++) {
-						outputImage(startRow2X+x+eyeRegion,startRow2Y+_eyeStartY+h) = COLOR_RGB(0,0,255);             //top
-						outputImage(startRow2X+x+eyeRegion,startRow2Y+_eyeStartY+_eyeHeight+h) = COLOR_RGB(0,0,255);  //bottom
+						outputImage(startRow2X+x+eyeRegion,startRow2Y+_eyeStartY+h) = COLOR_RGB(0,0,255);            // top
+						outputImage(startRow2X+x+eyeRegion,startRow2Y+_eyeStartY+_eyeHeight+h) = COLOR_RGB(0,0,255); // bottom
 					}
 
 					// draw the left and right boundaries (square)
@@ -541,14 +539,14 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 			
 			
 		}
-		else{	// blink
+		else{  // blink
 			eye.resize(50,15);
 			eye.setAll(COLOR_RGB(255,255,255));
 		} 
 		
 		// display the original eye
 		sprintf(filename, "images/SP/eye/%d/%d.jpg", eyeNum, i);
-	    writeJpeg( eye, filename, 100 );
+	        writeJpeg( eye, filename, 100 );
 		
 		eyeMovement(eye, eyeDirection, eye.width(), eye.height(), i, eyeNum, eyeNum, _maxPupilHeight, _eyeHeight);
 		
@@ -558,9 +556,10 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 		scaleRGB(eyeResized, eye);
 		int cw = eyeResized.width();
 		int ch = eyeResized.height(); 
+		
 		// display the resized eye
 		sprintf(filename, "images/SP/eyeResized/%d/%d.jpg", eyeNum, i);
-	    writeJpeg( eyeResized, filename, 100 );
+	        writeJpeg( eyeResized, filename, 100 );
 
 		eyeNum++;
 	}
@@ -581,7 +580,7 @@ void detectEye(RGBImage & inputImage, RGBImage & outputImage, RGBImage & eye, RG
 	graphX = graphX+2;
 }
 
-/* Function to detect the face */
+/* Function to detect face */
 void detectFace(RGBImage & inputImage, RGBImage & face, RGBImage & eye, RGBImage & eyeResized, RGBImage & eyeDirection, RGBImage & graph, RGBImage & outputImage, int width, int height, int i){
 	int x, y, startX, startY, cw, ch, w, h;
 	int pix;
@@ -592,14 +591,14 @@ void detectFace(RGBImage & inputImage, RGBImage & face, RGBImage & eye, RGBImage
 	int strucWidth = 11;
 	
 	double saturationAdjust = 0.5;   // adjustment range is -1.0 to 1.0
-    double intensityAdjust = -0.25;  // adjustment range is -1.0 to 1.0
+        double intensityAdjust = -0.25;  // adjustment range is -1.0 to 1.0
 	
 	Image<unsigned char> binary, strucElem, componentImage;
 	
 	face.resize(width, height);
 	face.setAll(0);
 	binary.resize( width, height );
-    binary.setAll(0);
+        binary.setAll(0);
 	
 	for(x=0; x<width; x++){
 		for(y=0; y<height; y++){
@@ -668,28 +667,28 @@ void detectFace(RGBImage & inputImage, RGBImage & face, RGBImage & eye, RGBImage
 		int ch = componentImage.height();  // height of bounding box
 		int cw = componentImage.width();   // width of bounding box
 
-		if(area < cw*ch){	//get the biggest component image
+		if(area < cw*ch){  //get the biggest component image
 			area = cw*ch;
 			cc.getBoundary(c,startX,startY,w,h);
 		}
 	}	
 	/* Box the face */
 	for (x = startX; x < startX+w;  x++) {
-		outputImage(x,startY) = COLOR_RGB(255,0,0);     //top
-		outputImage(x,startY+h-1) = COLOR_RGB(255,0,0); //bottom
+		outputImage(x,startY) = COLOR_RGB(255,0,0);     // top
+		outputImage(x,startY+h-1) = COLOR_RGB(255,0,0); // bottom
 	}
 	for (y = startY; y < startY+h;  y++) {
-		outputImage(startX,y) = COLOR_RGB(255,0,0);     //left
-		outputImage(startX+w-1,y) = COLOR_RGB(255,0,0); //right
+		outputImage(startX,y) = COLOR_RGB(255,0,0);     // left
+		outputImage(startX+w-1,y) = COLOR_RGB(255,0,0); // right
 	}
-	//bound the eye
+
 	int eyeHeight = h/6;
 	for (x = startX; x < startX+w;  x++) {
-		outputImage(x,startY+eyeHeight) = COLOR_RGB(255,0,0);                //upper bound
-		outputImage(x,startY+2*eyeHeight+eyeHeight/2) = COLOR_RGB(255,0,0);  //lower bound
+		outputImage(x,startY+eyeHeight) = COLOR_RGB(255,0,0);                // upper bound
+		outputImage(x,startY+2*eyeHeight+eyeHeight/2) = COLOR_RGB(255,0,0);  // lower bound
 	}
 	for(y=startY+eyeHeight; y<startY+2*eyeHeight+eyeHeight/2; y++){
-		outputImage(startX+w/2,y) = COLOR_RGB(255,0,0);  //middle line
+		outputImage(startX+w/2,y) = COLOR_RGB(255,0,0);  // middle line
 	}
 	detectEye(inputImage, outputImage, eye, eyeResized, eyeDirection, graph, startX, startY, w, eyeHeight, i); 
 }
@@ -756,37 +755,37 @@ int main () {
 	readJpeg( rightTitle, "images/SP/right.jpg");
 	
     for(i=0; i<SIZE; i++){
-		leftFlag=rightFlag=centerFlag=blinkFlag=0;
+	    leftFlag=rightFlag=centerFlag=blinkFlag=0;
 		
-		sprintf(filename, "images/SP/input/%s/%d.jpg", input, i);
+            sprintf(filename, "images/SP/input/%s/%d.jpg", input, i);
 	    readJpeg( inputImage, filename);
 	    height = inputImage.height();
 	    width  = inputImage.width();
 	   
 	    outputImage.resize(width, height);
-		outputImage = inputImage;
+	    outputImage = inputImage;
 	    
-		detectFace(inputImage, face, eye, eyeResized, eyeDirection, graph, outputImage, width, height, i); 
-		sprintf(filename, "images/SP/face/%d.jpg", i);
+	    detectFace(inputImage, face, eye, eyeResized, eyeDirection, graph, outputImage, width, height, i); 
+	    sprintf(filename, "images/SP/face/%d.jpg", i);
 	    writeJpeg( face, filename, 100 ); 
 		
-		sprintf(filename, "images/SP/output/%d.jpg", i);
-		writeJpeg( outputImage, filename, 100 );
+	    sprintf(filename, "images/SP/output/%d.jpg", i);
+	    writeJpeg( outputImage, filename, 100 );
 		
-		finalOutputImage.resize(width+2*boxWidth+100, height+200);
-		finalOutputImage.setAll(0);
+	    finalOutputImage.resize(width+2*boxWidth+100, height+200);
+	    finalOutputImage.setAll(0);
 		
-		for(int x=0; x<690; x++){            // draw title
-			for(int y=0; y<100; y++){
-				finalOutputImage(x+250,y) = title(x,y);
-			}
+	    for(int x=0; x<690; x++){            // draw title
+		for(int y=0; y<100; y++){
+		    finalOutputImage(x+250,y) = title(x,y);
 		}
+	    }
 		
-		for(int x=0; x<275; x++){			// draw title
-			for(int y=0; y<100; y++){
-				finalOutputImage(x,y+100) = leftTitle(x,y);
-			}
+	    for(int x=0; x<275; x++){			// draw title
+		for(int y=0; y<100; y++){
+		    finalOutputImage(x,y+100) = leftTitle(x,y);
 		}
+	    }
 		
 		for(int x=0; x<275; x++){			// draw title
 			for(int y=0; y<100; y++){
